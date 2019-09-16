@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "209093351111",
+    "firebase_url": "https://chatsapp-301e4.firebaseio.com",
+    "project_id": "chatsapp-301e4",
+    "storage_bucket": "chatsapp-301e4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:209093351111:android:656cc0f27249ad0d8150e2",
+        "android_client_info": {
+          "package_name": "com.niltok.chatsapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "209093351111-hegcqnqigd8q2ppj94vukv7si8qckfu4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.niltok.chatsapp",
+            "certificate_hash": "d72f3230141d45a4eb068b3fcc9f842f539d23b4"
+          }
+        },
+        {
+          "client_id": "209093351111-scqbn9kl62aovhdjaraq7hkdb3v6ejlv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBEWro6myKDRnOkTVmqKnDMjDTfDUogv2k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "209093351111-scqbn9kl62aovhdjaraq7hkdb3v6ejlv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

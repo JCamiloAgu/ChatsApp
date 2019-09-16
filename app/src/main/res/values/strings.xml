@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">ChatsApp</string>
+
+    <string name="login_email">Email</string>
+    <string name="login_password">Password</string>
+    <string name="login_confirm_password">Confirm Password</string>
+    <string name="login_sign_in">Sign In</string>
+    <string name="login_sign_up">Sign Up</string>
+    <string name="login_reset_password">Reset My Password</string>
+    <string name="login_sign_in_google">Sign In With Google</string>
+    <string name="login_forgot_password">I have forgotten my password</string>
+    <string name="login_create_account">Create a new Account</string>
+    <string name="login_go_login">Go back to login</string>
+</resources>
