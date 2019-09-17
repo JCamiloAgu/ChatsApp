@@ -11,4 +11,11 @@
     <string name="login_forgot_password">I have forgotten my password</string>
     <string name="login_create_account">Create a new Account</string>
     <string name="login_go_login">Go back to login</string>
+
+    <string name="navigation_bottom_info">Info</string>
+    <string name="navigation_bottom_rates">Rates</string>
+    <string name="navigation_bottom_chat">Chat</string>
+    <string name="chat_edit_text_message_hint">Type here a message...</string>
+
+
 </resources>

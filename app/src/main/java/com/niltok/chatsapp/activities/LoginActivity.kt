@@ -24,13 +24,7 @@ class LoginActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFailedLis
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        if(mAuth.currentUser === null)
-        {
-            toast("Nope")
-        }else{
-            toast("Yep")
-            mAuth.signOut()
-        }
+
 
         buttonLogIn.setOnClickListener {
             val email = editTextEmail.text.toString()
@@ -77,9 +71,12 @@ class LoginActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFailedLis
         mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this){ task ->
             if (task.isSuccessful)
             {
-                if (mAuth.currentUser!!.isEmailVerified)
-                    toast("User is now logged in")
-                else
+                if (mAuth.currentUser!!.isEmailVerified) {
+                    goToActivity<LoginActivity> {
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    }
+                    overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+                 }else
                     toast("User must confirm email first")
 
             }else{
@@ -91,7 +88,8 @@ class LoginActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFailedLis
     private fun loginByGoogleAccountIntoFirebase(googleAccount: GoogleSignInAccount)
     {
         val credential = GoogleAuthProvider.getCredential(googleAccount.idToken, null)
-        mAuth.signInWithCredential(credential).addOnCompleteListener(this) {toast("Signed In by Google!! ")}
+        mAuth.signInWithCredential(credential).addOnCompleteListener(this) {
+            toast("Signed In by Google!! ")}
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -105,6 +103,8 @@ class LoginActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFailedLis
                 val account = result.signInAccount
                 loginByGoogleAccountIntoFirebase(account!!)
             }
+            else
+                toast("Error")
         }
 
     }
