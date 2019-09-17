@@ -26,7 +26,7 @@ class ChatAdapter(val items: List<Message>, val userId: String): RecyclerView.Ad
         return when(viewType)
         {
             MY_MESSAGE -> ViewHolderR(parent.inflate(layoutRight))
-            else-> ViewHolderR(parent.inflate(layoutLeft))
+            else-> ViewHolderL(parent.inflate(layoutLeft))
         }
     }
 
@@ -47,8 +47,14 @@ class ChatAdapter(val items: List<Message>, val userId: String): RecyclerView.Ad
         {
             textViewMessageRight.text = message.message
             textViewTimeRight.text = SimpleDateFormat("hh:mm").format(message.sentAt)
-            Picasso.get().load(message.profileImageURL).resize(100,100)
-                .centerCrop().transform(CircleTransform()).into(imageViewProfileRight)
+            if(message.profileImageURL.isEmpty()) {
+                Picasso.get().load(R.drawable.ic_person).resize(100, 100)
+                    .centerCrop().transform(CircleTransform()).into(imageViewProfileRight)
+            }
+            else {
+                Picasso.get().load(message.profileImageURL).resize(100, 100)
+                    .centerCrop().transform(CircleTransform()).into(imageViewProfileRight)
+            }
         }
     }
 
@@ -58,8 +64,14 @@ class ChatAdapter(val items: List<Message>, val userId: String): RecyclerView.Ad
         {
             textViewMessageLeft.text = message.message
             textViewTimeLeft.text = SimpleDateFormat("hh:mm").format(message.sentAt)
-            Picasso.get().load(message.profileImageURL).resize(100,100)
-                .centerCrop().transform(CircleTransform()).into(imageViewProfileLeft)
+             if(message.profileImageURL.isEmpty()) {
+                 Picasso.get().load(R.drawable.ic_person).resize(100, 100)
+                     .centerCrop().transform(CircleTransform()).into(imageViewProfileLeft)
+             }
+            else {
+                 Picasso.get().load(message.profileImageURL).resize(100, 100)
+                     .centerCrop().transform(CircleTransform()).into(imageViewProfileLeft)
+             }
         }
     }
 

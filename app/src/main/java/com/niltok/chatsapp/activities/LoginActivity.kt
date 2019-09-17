@@ -24,8 +24,6 @@ class LoginActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFailedLis
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-
-
         buttonLogIn.setOnClickListener {
             val email = editTextEmail.text.toString()
             val password = editTextPassword.text.toString()
@@ -72,7 +70,7 @@ class LoginActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFailedLis
             if (task.isSuccessful)
             {
                 if (mAuth.currentUser!!.isEmailVerified) {
-                    goToActivity<LoginActivity> {
+                    goToActivity<MainActivity> {
                         flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     }
                     overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
@@ -89,7 +87,10 @@ class LoginActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFailedLis
     {
         val credential = GoogleAuthProvider.getCredential(googleAccount.idToken, null)
         mAuth.signInWithCredential(credential).addOnCompleteListener(this) {
-            toast("Signed In by Google!! ")}
+            goToActivity<MainActivity>{
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            }
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)}
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -106,9 +107,6 @@ class LoginActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFailedLis
             else
                 toast("Error")
         }
-
     }
-
     override fun onConnectionFailed(p0: ConnectionResult) = toast("Connection Failed!!")
-
 }

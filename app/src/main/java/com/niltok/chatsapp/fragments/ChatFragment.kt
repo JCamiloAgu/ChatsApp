@@ -10,8 +10,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.*
 
 import com.niltok.chatsapp.R
 import com.niltok.chatsapp.adapters.ChatAdapter
@@ -19,6 +18,7 @@ import com.niltok.chatsapp.models.Message
 import com.niltok.chatsapp.toast
 import kotlinx.android.synthetic.main.fragment_chat.view.*
 import java.util.*
+import java.util.EventListener
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
@@ -35,6 +35,8 @@ class ChatFragment : Fragment() {
     private val store: FirebaseFirestore = FirebaseFirestore.getInstance()
     private lateinit var chatDBRef: CollectionReference
 
+    private var chatSubscription: ListenerRegistration? = null
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,6 +48,8 @@ class ChatFragment : Fragment() {
         setUpCurrentUser()
         setUpRecyclerView()
         setUpChatBtn()
+
+        subscribeToChatMessages()
 
         return _view
     }
@@ -74,8 +78,9 @@ class ChatFragment : Fragment() {
             val messageText = _view.editTextMessage.text.toString()
             if(messageText.isNotEmpty())
             {
-                val message = Message(currentUser.uid, messageText, currentUser.photoUrl.toString(), Date())
-
+                val photo = currentUser.photoUrl?.let{ currentUser.photoUrl.toString()} ?: run { "" }
+                val message = Message(currentUser.uid, messageText, photo, Date())
+                saveMessage(message)
                 _view.editTextMessage.setText("")
             }
         }
@@ -90,12 +95,35 @@ class ChatFragment : Fragment() {
         newMessage["sentAt"] = message.sentAt
 
         chatDBRef.add(newMessage)
-            .addOnCompleteListener{
-                activity!!.toast("Message added!")
-            }
-            .addOnFailureListener {
-                activity!!.toast("Message error, try again!")
-            }
     }
 
+    private fun subscribeToChatMessages()
+    {
+        chatSubscription = chatDBRef
+            .orderBy("sentAt", Query.Direction.DESCENDING)
+            .limit(100)
+            .addSnapshotListener(object : EventListener, com.google.firebase.firestore.EventListener<QuerySnapshot>
+        {
+            override fun onEvent(snapshot: QuerySnapshot?, exception: FirebaseFirestoreException?) {
+                exception?.let {
+                    activity!!.toast("Exception!")
+                    return
+                }
+
+                snapshot?.let{
+                    messageList.clear()
+                    val messages = it.toObjects(Message::class.java)
+                    messageList.addAll(messages.asReversed())
+                    adapter.notifyDataSetChanged()
+                    _view.recyclerView.smoothScrollToPosition(messageList.size)
+                }
+            }
+
+        })
+    }
+
+    override fun onDestroy() {
+        chatSubscription?.remove()
+        super.onDestroy()
+    }
 }
