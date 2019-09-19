@@ -1,10 +1,15 @@
 package com.niltok.chatsapp
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.widget.Toolbar
 import androidx.viewpager.widget.ViewPager
 import com.alejandrolora.mylibrary.ToolbarActivity
+import com.google.firebase.auth.FirebaseAuth
+import com.niltok.chatsapp.activities.LoginActivity
 import com.niltok.chatsapp.adapters.PagerAdapter
 import com.niltok.chatsapp.fragments.ChatFragment
 import com.niltok.chatsapp.fragments.InfoFragment
@@ -35,6 +40,7 @@ class MainActivity : ToolbarActivity() {
 
     private fun setUpViewPager(adapter: PagerAdapter){
         viewPager.adapter = adapter
+        viewPager.offscreenPageLimit = adapter.count
         viewPager.addOnPageChangeListener(object: ViewPager.OnPageChangeListener{
             override fun onPageScrollStateChanged(state: Int) {}
 
@@ -48,9 +54,9 @@ class MainActivity : ToolbarActivity() {
                 if (prevBottomSelected == null)
                     bottomNavigation.menu.getItem(0).isChecked = false
                 else
-                    prevBottomSelected!!.isChecked = true
+                    prevBottomSelected!!.isChecked = false
 
-                bottomNavigation.menu.getItem(0).isChecked = true
+                bottomNavigation.menu.getItem(position).isChecked = true
                 prevBottomSelected = bottomNavigation.menu.getItem(position)
             }
 
@@ -70,12 +76,29 @@ class MainActivity : ToolbarActivity() {
                 }
 
                 R.id.bottom_nav_chat -> {
-                    viewPager.currentItem = 3; true
+                    viewPager.currentItem = 2; true
                 }
                 else -> false
             }
         }
     }
 
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.general_options_menu, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId)
+        {
+            R.id.menu_log_out -> {
+                FirebaseAuth.getInstance().signOut()
+                goToActivity<LoginActivity>{
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                }
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
 
 }

@@ -19,6 +19,11 @@
 
     <string name="info_label_messages">Total messages</string>
     <string name="info_no_name">Name is not available</string>
+    <string name="options_menu_log_out">Log out</string>
 
+    <string name="dialog_title">Rate the App!</string>
+    <string name="dialog_edit_text_hint">Leave your feedback</string>
+    <string name="dialog_ok">Rate</string>
+    <string name="dialog_cancel">Cancel</string>
 
 </resources>

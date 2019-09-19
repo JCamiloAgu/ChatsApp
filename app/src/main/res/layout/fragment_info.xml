@@ -54,7 +54,7 @@
         app:layout_constraintTop_toBottomOf="@+id/imageViewInfoAvatar" />
 
     <TextView
-        android:id="@+id/textViewInfoMessages"
+        android:id="@+id/textViewInfoTotalMessages"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"

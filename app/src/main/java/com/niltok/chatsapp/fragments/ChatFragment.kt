@@ -15,7 +15,9 @@ import com.google.firebase.firestore.*
 import com.niltok.chatsapp.R
 import com.niltok.chatsapp.adapters.ChatAdapter
 import com.niltok.chatsapp.models.Message
+import com.niltok.chatsapp.models.TotalMessagesEvent
 import com.niltok.chatsapp.toast
+import com.niltok.chatsapp.utils.RxBus
 import kotlinx.android.synthetic.main.fragment_chat.view.*
 import java.util.*
 import java.util.EventListener
@@ -26,8 +28,7 @@ class ChatFragment : Fragment() {
 
     private lateinit var _view: View
     private lateinit var adapter: ChatAdapter
-    private val messageList: ArrayList<com.niltok.chatsapp.models.Message> = ArrayList()
-
+    private val messageList: ArrayList<Message> = ArrayList()
 
     private val mAuth: FirebaseAuth = FirebaseAuth.getInstance()
     private lateinit var currentUser: FirebaseUser
@@ -78,7 +79,8 @@ class ChatFragment : Fragment() {
             val messageText = _view.editTextMessage.text.toString()
             if(messageText.isNotEmpty())
             {
-                val photo = currentUser.photoUrl?.let{ currentUser.photoUrl.toString()} ?: run { "" }
+                val photo = if(currentUser.photoUrl != null) currentUser.photoUrl.toString() else ""
+
                 val message = Message(currentUser.uid, messageText, photo, Date())
                 saveMessage(message)
                 _view.editTextMessage.setText("")
@@ -91,7 +93,7 @@ class ChatFragment : Fragment() {
         val newMessage = HashMap<String, Any>()
         newMessage["authorId"] = message.authorId
         newMessage["message"] = message.message
-        newMessage["profileImageUrl"] = message.profileImageURL
+        newMessage["profileImageURL"] = message.profileImageURL
         newMessage["sentAt"] = message.sentAt
 
         chatDBRef.add(newMessage)
@@ -116,6 +118,7 @@ class ChatFragment : Fragment() {
                     messageList.addAll(messages.asReversed())
                     adapter.notifyDataSetChanged()
                     _view.recyclerView.smoothScrollToPosition(messageList.size)
+                    RxBus.publish(TotalMessagesEvent(messageList.size))
                 }
             }
 

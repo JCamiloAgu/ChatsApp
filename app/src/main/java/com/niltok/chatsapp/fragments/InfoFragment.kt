@@ -11,12 +11,13 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.*
 
 import com.niltok.chatsapp.R
+import com.niltok.chatsapp.models.TotalMessagesEvent
 import com.niltok.chatsapp.toast
 import com.niltok.chatsapp.utils.CircleTransform
+import com.niltok.chatsapp.utils.RxBus
 import com.squareup.picasso.Picasso
+import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.fragment_info.view.*
-import java.lang.Exception
-import java.util.*
 import java.util.EventListener
 
 class InfoFragment : Fragment() {
@@ -30,6 +31,8 @@ class InfoFragment : Fragment() {
     private lateinit var chatDBRef: CollectionReference
 
     private var chatSubscription: ListenerRegistration? = null
+    private lateinit var infoBusListener: Disposable
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,7 +44,10 @@ class InfoFragment : Fragment() {
         setUpCurrentUser()
         setUpCurrentUserInfoUI()
 
-        subscribeToTotalMessagesFirebaseStyle()
+//        subscribeToTotalMessagesFirebaseStyle()
+
+
+        subscribeToTotalMessagesEventBusReactiveStyle()
 
         return _view
     }
@@ -61,7 +67,7 @@ class InfoFragment : Fragment() {
 
 
 
-//        _view.textViewInfoName.text = currentUser.displayName?.let { it } ?: run { getString(R.string.info_no_name) }
+        _view.textViewInfoName.text = currentUser.displayName?.let { it } ?: run { getString(R.string.info_no_name) }
 
 
         currentUser.photoUrl?.let {
@@ -82,13 +88,18 @@ class InfoFragment : Fragment() {
                     return
                 }
 
-                querySnapshot?.let { _view.textViewInfoMessages.text = "${it.size()}" }
+                querySnapshot?.let { _view.textViewInfoTotalMessages.text = "${it.size()}" }
             }
 
         })
     }
 
+    private fun subscribeToTotalMessagesEventBusReactiveStyle(){
+            infoBusListener = RxBus.listen(TotalMessagesEvent::class.java).subscribe {_view.textViewInfoTotalMessages.text = "${it.total}"}
+    }
+
     override fun onDestroyView() {
+        infoBusListener.dispose()
         chatSubscription?.remove()
         super.onDestroyView()
     }
